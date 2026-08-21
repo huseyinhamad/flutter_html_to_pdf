@@ -2,7 +2,6 @@ group 'com.originoss.flutter_html_to_pdf_plus'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.9.24'
     repositories {
         google()
         mavenCentral()
@@ -10,9 +9,6 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:8.3.0'
-        if (project.findProperty('android.builtInKotlin') != 'true') {
-            classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        }
     }
 }
 
@@ -24,10 +20,6 @@ rootProject.allprojects {
 }
 
 apply plugin: 'com.android.library'
-
-if (project.findProperty('android.builtInKotlin') != 'true') {
-    apply plugin: 'kotlin-android'
-}
 
 android {
     namespace 'com.originoss.flutter_html_to_pdf_plus'
@@ -44,11 +36,5 @@ android {
 
     defaultConfig {
         minSdk 19
-    }
-}
-
-dependencies {
-    if (project.findProperty('android.builtInKotlin') != 'true') {
-        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     }
 }
