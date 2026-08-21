@@ -7,7 +7,7 @@ public class SwiftFlutterHtmlToPdfPlugin: NSObject, FlutterPlugin{
     var urlObservation: NSKeyValueObservation?
     
     public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(name: "flutter_html_to_pdf", binaryMessenger: registrar.messenger())
+    let channel = FlutterMethodChannel(name: "flutter_html_to_pdf_plus", binaryMessenger: registrar.messenger())
     let instance = SwiftFlutterHtmlToPdfPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
   }
