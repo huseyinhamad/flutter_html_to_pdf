@@ -2,32 +2,30 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_full_pdf_viewer/flutter_full_pdf_viewer.dart';
-import 'package:flutter_html_to_pdf/flutter_html_to_pdf.dart';
+import 'package:flutter_html_to_pdf_plus/flutter_html_to_pdf_plus.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() {
-  runApp(MaterialApp(
-    home: MyApp(),
-  ));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  String generatedPdfFilePath;
-
-  @override
-  void initState() {
-    super.initState();
-    generateExampleDocument();
-  }
+  String? generatedPdfFilePath;
+  bool isGenerating = false;
 
   Future<void> generateExampleDocument() async {
-    final htmlContent = """
+    setState(() {
+      isGenerating = true;
+    });
+
+    const htmlContent = """
     <!DOCTYPE html>
     <html>
       <head>
@@ -67,30 +65,61 @@ class _MyAppState extends State<MyApp> {
     </html>
     """;
 
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    final targetPath = appDocDir.path;
-    final targetFileName = "example-pdf";
+    try {
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      final targetPath = appDocDir.path;
+      const targetFileName = "example-pdf";
 
-    final generatedPdfFile = await FlutterHtmlToPdf.convertFromHtmlContent(htmlContent, targetPath, targetFileName);
-    generatedPdfFilePath = generatedPdfFile.path;
+      final generatedPdfFile = await FlutterHtmlToPdf.convertFromHtmlContent(
+        content: htmlContent,
+        configuration: PrintPdfConfiguration(
+          targetDirectory: targetPath,
+          targetName: targetFileName,
+          printSize: PrintSize.A4,
+          printOrientation: PrintOrientation.Portrait,
+        ),
+      );
+      setState(() {
+        generatedPdfFilePath = generatedPdfFile.path;
+        isGenerating = false;
+      });
+    } catch (e) {
+      setState(() {
+        isGenerating = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: ElevatedButton(
-          child: Text("Open Generated PDF Preview"),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => PDFViewerScaffold(appBar: AppBar(title: Text("Generated PDF Document")), path: generatedPdfFilePath)),
-            );
-          },
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Flutter HTML to PDF Example'),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: isGenerating ? null : generateExampleDocument,
+                  child: Text(
+                      isGenerating ? "Generating..." : "Generate PDF Document"),
+                ),
+                const SizedBox(height: 20),
+                if (generatedPdfFilePath != null)
+                  Text(
+                    "Generated PDF at:\n$generatedPdfFilePath",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
-    ));
+    );
   }
 }

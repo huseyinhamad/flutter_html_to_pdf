@@ -1,29 +1,31 @@
-name: flutter_html_to_pdf
+name: flutter_html_to_pdf_plus
 description: Flutter plugin for generating PDF documents from HTML code templates
-version: 0.7.0
-homepage: https://github.com/Afur/flutter_html_to_pdf
+version: 0.4.0
+homepage: https://github.com/originoss/flutter_html_to_pdf_plus
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
-  flutter: ">=1.12.0"
+  sdk: '>=2.18.0 <4.0.0'
+  flutter: ">=3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  path_provider: ^2.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
-  # This section identifies this Flutter project as a plugin project.
-  # The androidPackage and pluginClass identifiers should not ordinarily
-  # be modified. They are used by the tooling to maintain consistency when
-  # adding or updating assets for this project.
   plugin:
     platforms:
       android:
-        package: com.afur.flutter_html_to_pdf
+        package: com.originoss.flutter_html_to_pdf_plus
         pluginClass: FlutterHtmlToPdfPlugin
       ios:
         pluginClass: FlutterHtmlToPdfPlugin

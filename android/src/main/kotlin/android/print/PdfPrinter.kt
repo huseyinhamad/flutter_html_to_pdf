@@ -27,25 +27,35 @@ class PdfPrinter(private val printAttributes: PrintAttributes) {
                 null,
                 object : PrintDocumentAdapter.LayoutResultCallback() {
 
-                    override fun onLayoutFinished(info: PrintDocumentInfo, changed: Boolean) {
+                    override fun onLayoutFinished(info: PrintDocumentInfo?, changed: Boolean) {
                         printAdapter.onWrite(arrayOf(PageRange.ALL_PAGES),
                             getOutputFile(path, fileName),
                             CancellationSignal(),
                             object : PrintDocumentAdapter.WriteResultCallback() {
 
-                                override fun onWriteFinished(pages: Array<PageRange>) {
+                                override fun onWriteFinished(pages: Array<PageRange>?) {
                                     super.onWriteFinished(pages)
 
-                                    if (pages.isEmpty()) {
+                                    if (pages.isNullOrEmpty()) {
                                         callback.onFailure()
-                                    }
-
-                                    File(path, fileName).let {
-                                        callback.onSuccess(it.absolutePath)
+                                    } else {
+                                        File(path, fileName).let {
+                                            callback.onSuccess(it.absolutePath)
+                                        }
                                     }
 
                                 }
+
+                                override fun onWriteFailed(error: CharSequence?) {
+                                    super.onWriteFailed(error)
+                                    callback.onFailure()
+                                }
                             })
+                    }
+
+                    override fun onLayoutFailed(error: CharSequence?) {
+                        super.onLayoutFailed(error)
+                        callback.onFailure()
                     }
                 },
                 null

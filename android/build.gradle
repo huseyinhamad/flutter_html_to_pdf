@@ -1,16 +1,18 @@
-group 'com.afur.flutter_html_to_pdf'
+group 'com.originoss.flutter_html_to_pdf_plus'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.3.50'
+    ext.kotlin_version = '1.9.24'
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:8.3.0'
+        if (project.findProperty('android.builtInKotlin') != 'true') {
+            classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        }
     }
 }
 
@@ -22,18 +24,18 @@ rootProject.allprojects {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+
+if (project.findProperty('android.builtInKotlin') != 'true') {
+    apply plugin: 'kotlin-android'
+}
 
 android {
-    compileSdkVersion 30
+    namespace 'com.originoss.flutter_html_to_pdf_plus'
+    compileSdk 34
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = '1.8'
     }
 
     sourceSets {
@@ -41,10 +43,12 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 16
+        minSdk 19
     }
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    if (project.findProperty('android.builtInKotlin') != 'true') {
+        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    }
 }
